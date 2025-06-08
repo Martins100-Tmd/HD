@@ -127,17 +127,73 @@ class MartinsArray {
     }
     return mapResult;
   }
-}
 
-let M1 = new MartinsArray();
-M1.concat(1, 2, 3, 4);
-M1.log();
-M1.push(10);
-console.log(
-  M1.every((x: any) => x <= 4),
-  M1.length
-);
-M1.pop();
-//M1.push(3);
-console.log(M1.list, M1.lastIndexOf(3));
-console.log(M1.map((x) => x * 2));
+  reduce<T>(
+    callback: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T,
+    initialValue?: any
+  ) {
+    if (typeof callback !== "function") {
+      throw new TypeError(callback + " is not a function");
+    }
+    let accumulator, startIndex;
+    if (initialValue !== undefined) {
+      accumulator = initialValue;
+      startIndex = 0;
+    } else {
+      if (this.length === 0) {
+        throw new TypeError("Reduce of empty array with no initial value");
+      }
+      accumulator = this.list[0];
+      startIndex = 1;
+    }
+    for (let i = startIndex; i < this.length; i++) {
+      accumulator = callback(accumulator, this.list[i], i, this.list);
+    }
+    return accumulator;
+  }
+
+  reverse() {
+    let i = 0,
+      j = this.length - 1;
+    while (i < j) {
+      let temp = this.list[i];
+      this.list[i] = this.list[j];
+      this.list[j] = temp;
+      i++, j--;
+    }
+    return this.list;
+  }
+
+  unshift<T>(...args: T[]): void {
+    this.list = [...args, ...this.list];
+    let i = 0;
+    while (args[i] != null) {
+      this.length += 1;
+      i++;
+    }
+  }
+
+  shift(): void {
+    let newArr = [];
+    for (let i = 1; i < this.length; i++) {
+      newArr[i - 1] = this.list[i];
+    }
+    this.list = newArr;
+    this.length -= 1;
+  }
+
+  slice(start: number = 0, end: number = this.length) {
+    if (start < 0) start = this.length + start < 0 ? 0 : this.length + start;
+    if (end < 0) end = this.length + end < 0 ? 0 : this.length + end;
+    console.log(start, end);
+    let newArr = [],
+      j = 0;
+    for (let i = start; i < end; i++) {
+      newArr[j] = this.list[i];
+      j++;
+    }
+    return newArr;
+  }
+
+  //splice<T>(start: number = 0, deleteCount: number = 1): T[] {}
+}

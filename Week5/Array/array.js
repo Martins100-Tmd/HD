@@ -38,6 +38,7 @@ var MartinsArray = /** @class */ (function () {
     function MartinsArray() {
         this.length = 0;
         this.list = [];
+        //splice<T>(start: number = 0, deleteCount: number = 1): T[] {}
     }
     MartinsArray.prototype.concat = function () {
         var args = [];
@@ -181,14 +182,71 @@ var MartinsArray = /** @class */ (function () {
         }
         return mapResult;
     };
+    MartinsArray.prototype.reduce = function (callback, initialValue) {
+        if (typeof callback !== "function") {
+            throw new TypeError(callback + " is not a function");
+        }
+        var accumulator, startIndex;
+        if (initialValue !== undefined) {
+            accumulator = initialValue;
+            startIndex = 0;
+        }
+        else {
+            if (this.length === 0) {
+                throw new TypeError("Reduce of empty array with no initial value");
+            }
+            accumulator = this.list[0];
+            startIndex = 1;
+        }
+        for (var i = startIndex; i < this.length; i++) {
+            accumulator = callback(accumulator, this.list[i], i, this.list);
+        }
+        return accumulator;
+    };
+    MartinsArray.prototype.reverse = function () {
+        var i = 0, j = this.length - 1;
+        while (i < j) {
+            var temp = this.list[i];
+            this.list[i] = this.list[j];
+            this.list[j] = temp;
+            i++, j--;
+        }
+        return this.list;
+    };
+    MartinsArray.prototype.unshift = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        this.list = __spreadArray(__spreadArray([], args, true), this.list, true);
+        var i = 0;
+        while (args[i] != null) {
+            this.length += 1;
+            i++;
+        }
+    };
+    MartinsArray.prototype.shift = function () {
+        var newArr = [];
+        for (var i = 1; i < this.length; i++) {
+            newArr[i - 1] = this.list[i];
+        }
+        this.list = newArr;
+        this.length -= 1;
+    };
+    MartinsArray.prototype.slice = function (start, end) {
+        if (start === void 0) { start = 0; }
+        if (end === void 0) { end = this.length; }
+        if (start < 0)
+            start = this.length + start < 0 ? 0 : this.length + start;
+        if (end < 0)
+            end = this.length + end < 0 ? 0 : this.length + end;
+        console.log(start, end);
+        var newArr = [], j = 0;
+        for (var i = start; i < end; i++) {
+            newArr[j] = this.list[i];
+            j++;
+        }
+        return newArr;
+    };
     return MartinsArray;
 }());
-var M1 = new MartinsArray();
-M1.concat(1, 2, 3, 4);
-M1.log();
-M1.push(10);
-console.log(M1.every(function (x) { return x <= 4; }), M1.length);
-M1.pop();
-//M1.push(3);
-console.log(M1.list, M1.lastIndexOf(3));
-console.log(M1.map(function (x) { return x * 2; }));
