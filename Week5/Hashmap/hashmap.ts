@@ -1,5 +1,16 @@
-import { LNode } from "./bucket";
 import Hashkey from "./hashkey";
+
+class LNode<T> {
+  key: string;
+  val: string | number;
+  next: LNode<T> | null;
+
+  constructor(key: string, val: string | number) {
+    this.key = key;
+    this.val = val;
+    this.next = null;
+  }
+}
 
 class Hashmap<T> {
   Map: LNode<T>[] = [];
@@ -12,27 +23,45 @@ class Hashmap<T> {
 
   setVal(key: string, val: string | number) {
     const hashkey = Hashkey(key, this.size);
-    let bucketIndex = this.Map[hashkey];
-    if (bucketIndex === null) {
+    let curr: LNode<T> | null = this.Map[hashkey];
+    if (curr === null) {
       this.Map[hashkey] = new LNode(key, val);
+      return;
     } else {
-      let curr = this.Map[hashkey];
-      while (curr.next !== null) {
-        if (curr.key === key){ 
-          console.log(curr.key,key)
-          curr.val = val
-          break;
-        };
+      let help = curr;
+      while (curr !== null) {
+        if (curr.key === key) {
+          curr.val = val;
+          return;
+        }
+        help = curr;
         curr = curr.next;
       }
-      curr.next = new LNode(key, val);
+      help.next = new LNode(key, val);
     }
+  }
+
+  getVal(key: string): string | number | undefined {
+    const hashkey = Hashkey(key, this.size);
+    let curr: LNode<T> | null = this.Map[hashkey];
+    if (curr === null) return undefined;
+    else {
+      while (curr !== null) {
+        if (curr.key === key) return curr.val;
+        curr = curr.next;
+      }
+    }
+    return undefined;
   }
 }
 
 let A = new Hashmap(100);
 
 A.setVal("Martins", "Olumide");
-A.setVal("ws", 50);
-A.setVal('ws', 100);
-console.dir(A, { depth: Infinity });
+A.setVal("David", 50);
+A.setVal("Martins", 100);
+A.setVal("Martins", 200);
+A.setVal("uu", 1000);
+A.setVal("uuuu", "Portis");
+console.log(A.getVal("David"));
+//console.dir(A, { depth: Infinity });
