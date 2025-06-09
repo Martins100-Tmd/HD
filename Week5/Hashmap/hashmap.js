@@ -11,34 +11,32 @@ var LNode = /** @class */ (function () {
 }());
 var Hashmap = /** @class */ (function () {
     function Hashmap(size) {
-        this.Map = [];
         this.size = size;
-        this.Map = new Array(size).fill(null);
+        this.Map = new Array(size).map(function (_) { return null; });
     }
     Hashmap.prototype.setVal = function (key, val) {
-        var hashkey = (0, hashkey_1.default)(key, this.size);
-        var curr = this.Map[hashkey];
-        if (curr === null) {
-            this.Map[hashkey] = new LNode(key, val);
+        var index = (0, hashkey_1.default)(key, this.size);
+        var node = this.Map[index];
+        if (!node) {
+            this.Map[index] = new LNode(key, val);
             return;
         }
-        else {
-            var help = curr;
-            while (curr !== null) {
-                if (curr.key === key) {
-                    curr.val = val;
-                    return;
-                }
-                help = curr;
-                curr = curr.next;
+        var curr = node;
+        while (curr !== null) {
+            if (curr.key === key) {
+                curr.val = val;
+                return;
             }
-            help.next = new LNode(key, val);
+            if (curr.next === null)
+                break;
+            curr = curr.next;
         }
+        curr.next = new LNode(key, val);
     };
     Hashmap.prototype.getVal = function (key) {
         var hashkey = (0, hashkey_1.default)(key, this.size);
         var curr = this.Map[hashkey];
-        if (curr === null)
+        if (!curr)
             return undefined;
         else {
             while (curr !== null) {
@@ -49,14 +47,31 @@ var Hashmap = /** @class */ (function () {
         }
         return undefined;
     };
+    Hashmap.prototype.removeKey = function (key) {
+        var _a;
+        var hashkey = (0, hashkey_1.default)(key, this.size);
+        var curr = this.Map[hashkey];
+        if (!curr)
+            return undefined;
+        else {
+            var help = curr;
+            if (help.key === key) {
+                var temp = help.next;
+                this.Map[hashkey] = temp;
+                return help.val;
+            }
+            else {
+                while (curr !== null) {
+                    if (curr.next.key === key) {
+                        var temp = curr.next.next;
+                        var rA = (_a = curr.next) === null || _a === void 0 ? void 0 : _a.val;
+                        curr.next = temp;
+                        return rA;
+                    }
+                    curr = curr.next;
+                }
+            }
+        }
+    };
     return Hashmap;
 }());
-var A = new Hashmap(100);
-A.setVal("Martins", "Olumide");
-A.setVal("David", 50);
-A.setVal("Martins", 100);
-A.setVal("Martins", 200);
-A.setVal("uu", 1000);
-A.setVal("uuuu", "Portis");
-console.log(A.getVal("David"));
-//console.dir(A, { depth: Infinity });
