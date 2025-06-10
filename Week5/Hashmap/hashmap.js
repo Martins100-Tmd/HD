@@ -75,3 +75,4 @@ var Hashmap = /** @class */ (function () {
     };
     return Hashmap;
 }());
+var a = new Hashmap(100);

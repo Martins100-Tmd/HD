@@ -77,3 +77,5 @@ class Hashmap<T> {
     }
   }
 }
+
+let a = new Hashmap(100);

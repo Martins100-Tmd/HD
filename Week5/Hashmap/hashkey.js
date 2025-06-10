@@ -8,5 +8,7 @@ function Hashkey(key, size) {
     for (var i = 0; i < key.length; i++) {
         hash += key.charCodeAt(i);
     }
+    console.log(hash, size);
     return hash % size;
 }
+console.log(Hashkey("Martins", 100));
