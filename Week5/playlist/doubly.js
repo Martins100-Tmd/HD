@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var util_1 = require("./util");
 var songNode = /** @class */ (function () {
     function songNode(song) {
         this.song = song;
@@ -48,7 +49,9 @@ var songDoublyLinkedList = /** @class */ (function () {
     songDoublyLinkedList.prototype.shuffle = function () {
         if (this.length === 0)
             return;
-        var randomIndex = Math.floor(Math.random() * this.length);
+        var randomIndex = (0, util_1.rand)(this.length);
+        if (randomIndex < 0)
+            this.current = this.head;
         var useReverseSearch = randomIndex > this.length / 2;
         var currentNode = useReverseSearch ? this.tail : this.head;
         for (var i = 0; i < randomIndex; i++) {

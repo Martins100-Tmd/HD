@@ -1,4 +1,4 @@
-import { colorize } from "./color";
+import { rand } from "./util";
 
 class songNode<T> {
   song: string | null;
@@ -59,7 +59,8 @@ class songDoublyLinkedList<T> {
 
   shuffle(): void {
     if (this.length === 0) return;
-    const randomIndex = Math.floor(Math.random() * this.length);
+    const randomIndex = rand(this.length);
+    if (randomIndex < 0) this.current = this.head;
     const useReverseSearch = randomIndex > this.length / 2;
     let currentNode = useReverseSearch ? this.tail : this.head;
     for (let i = 0; i < randomIndex; i++) {
