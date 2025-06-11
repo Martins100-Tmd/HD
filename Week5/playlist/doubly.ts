@@ -1,3 +1,5 @@
+import { colorize } from "./color";
+
 class songNode<T> {
   song: string | null;
   next: songNode<T> | null;
@@ -20,7 +22,7 @@ class songDoublyLinkedList<T> {
   constructor(songs: string[]) {
     this.head = null;
     this.tail = null;
-    this.current = null;
+    this.current = new songNode(songs[0]);
     this.length = 0;
     this.currentIndex = 0;
     for (let i = 0; i < songs.length; i++) {
@@ -41,7 +43,6 @@ class songDoublyLinkedList<T> {
       }
     }
     this.length += 1;
-    console.log(this.length);
   }
 
   next(): void {
@@ -66,7 +67,7 @@ class songDoublyLinkedList<T> {
       currentNode = useReverseSearch ? currentNode.prev : currentNode.next;
     }
     this.current = currentNode ?? (useReverseSearch ? this.tail : this.head);
-    console.log("Now playing (shuffled):", this.current?.song);
+    this.prntNext();
   }
 
   setCurrentSong(song: string): void {
@@ -79,30 +80,38 @@ class songDoublyLinkedList<T> {
       }
       curr = moveFn(curr);
     }
+    this.prntNext();
   }
 
   prntNext(): void {
-    let curr = this.head;
+    let curr = this.head,
+      output = "";
     while (curr !== null) {
-      console.log(curr.song);
+      output += `\x1b[34m${curr.song}\x1b[0m`;
       curr = curr.next;
+      output += curr?.prev ? " -> " : "";
     }
+    console.log(
+      `\x1b[33mPlaylist:\x1b[0m ${output}\n\x1b[33mCurrent:\x1b[0m \x1b[32m${this.current?.song}\x1b[0m`
+    );
   }
 
   prntPrev(): void {
-    let curr = this.tail;
+    let curr = this.tail,
+      output = "";
     while (curr !== null) {
-      console.log(curr.song);
+      output += `\x1b[31m${curr.song}\x1b[0m`;
       curr = curr.prev;
+      output += curr?.next ? " -> " : "";
     }
+    console.log(
+      `\x1b[33mPlaylist:\x1b[0m ${output}\n\x1b[33mCurrent:\x1b[0m \x1b[32m${this.current?.song}\x1b[0m`
+    );
   }
 }
 
 let A = new songDoublyLinkedList(["songA", "songB", "songC", "songD", "songE"]);
 A.add("songF");
 A.prntNext();
-//console.dir(A.head, { depth: Infinity });
-console.log("\n");
-A.prntPrev();
-console.log("\n");
 A.shuffle();
+A.setCurrentSong("songF");

@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var songNode = /** @class */ (function () {
     function songNode(song) {
         this.song = song;
@@ -10,7 +12,7 @@ var songDoublyLinkedList = /** @class */ (function () {
     function songDoublyLinkedList(songs) {
         this.head = null;
         this.tail = null;
-        this.current = null;
+        this.current = new songNode(songs[0]);
         this.length = 0;
         this.currentIndex = 0;
         for (var i = 0; i < songs.length; i++) {
@@ -31,7 +33,6 @@ var songDoublyLinkedList = /** @class */ (function () {
             }
         }
         this.length += 1;
-        console.log(this.length);
     };
     songDoublyLinkedList.prototype.next = function () {
         var _a, _b;
@@ -45,7 +46,6 @@ var songDoublyLinkedList = /** @class */ (function () {
         this.current = this.current;
     };
     songDoublyLinkedList.prototype.shuffle = function () {
-        var _a;
         if (this.length === 0)
             return;
         var randomIndex = Math.floor(Math.random() * this.length);
@@ -57,7 +57,7 @@ var songDoublyLinkedList = /** @class */ (function () {
             currentNode = useReverseSearch ? currentNode.prev : currentNode.next;
         }
         this.current = currentNode !== null && currentNode !== void 0 ? currentNode : (useReverseSearch ? this.tail : this.head);
-        console.log("Now playing (shuffled):", (_a = this.current) === null || _a === void 0 ? void 0 : _a.song);
+        this.prntNext();
     };
     songDoublyLinkedList.prototype.setCurrentSong = function (song) {
         var searchFromHead = this.currentIndex < Math.floor(this.length / 2);
@@ -69,28 +69,32 @@ var songDoublyLinkedList = /** @class */ (function () {
             }
             curr = moveFn(curr);
         }
+        this.prntNext();
     };
     songDoublyLinkedList.prototype.prntNext = function () {
-        var curr = this.head;
+        var _a;
+        var curr = this.head, output = "";
         while (curr !== null) {
-            console.log(curr.song);
+            output += "\u001B[34m".concat(curr.song, "\u001B[0m");
             curr = curr.next;
+            output += (curr === null || curr === void 0 ? void 0 : curr.prev) ? " -> " : "";
         }
+        console.log("\u001B[33mPlaylist:\u001B[0m ".concat(output, "\n\u001B[33mCurrent:\u001B[0m \u001B[32m").concat((_a = this.current) === null || _a === void 0 ? void 0 : _a.song, "\u001B[0m"));
     };
     songDoublyLinkedList.prototype.prntPrev = function () {
-        var curr = this.tail;
+        var _a;
+        var curr = this.tail, output = "";
         while (curr !== null) {
-            console.log(curr.song);
+            output += "\u001B[31m".concat(curr.song, "\u001B[0m");
             curr = curr.prev;
+            output += (curr === null || curr === void 0 ? void 0 : curr.next) ? " -> " : "";
         }
+        console.log("\u001B[33mPlaylist:\u001B[0m ".concat(output, "\n\u001B[33mCurrent:\u001B[0m \u001B[32m").concat((_a = this.current) === null || _a === void 0 ? void 0 : _a.song, "\u001B[0m"));
     };
     return songDoublyLinkedList;
 }());
 var A = new songDoublyLinkedList(["songA", "songB", "songC", "songD", "songE"]);
 A.add("songF");
 A.prntNext();
-//console.dir(A.head, { depth: Infinity });
-console.log("\n");
-A.prntPrev();
-console.log("\n");
 A.shuffle();
+A.setCurrentSong("songF");
